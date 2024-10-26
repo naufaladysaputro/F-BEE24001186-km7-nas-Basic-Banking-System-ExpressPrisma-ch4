@@ -14,6 +14,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(routes);
+app.use((err, req, res, next) => {
+  res.status(err.status).json({
+      status: false,
+      message: err.message
+  })
+})
 
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);

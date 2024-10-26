@@ -2,13 +2,17 @@ const express = require("express");
 const TransactionController = require("../../../controllers/transactions.controller");
 const router = express.Router();
 
-router.post("/", TransactionController.createTransaction);
-router.get("/:id", TransactionController.getTransactionById);
+const validate  = require("../../../middleware/validation");
+const { createTransactionSchema } = require("../../../middleware/joi.transaction.scema");
+const { getTransactionByIdSchema } = require("../../../middleware/joi.transaction.scema");
+
+router.post("/", validate(createTransactionSchema), TransactionController.createTransaction);
+router.get("/:id", validate(getTransactionByIdSchema), TransactionController.getTransactionById);
 router.get("/", TransactionController.getAllTransactions);
 
-// Endpoint untuk deposit dan withdraw menggunakan PUT
-router.put('/deposit', TransactionController.deposit);
-router.put('/withdraw', TransactionController.withdraw);
+// // Endpoint untuk deposit dan withdraw menggunakan PUT
+// router.put('/deposit', TransactionController.deposit);
+// router.put('/withdraw', TransactionController.withdraw);
 
 module.exports = router;
 

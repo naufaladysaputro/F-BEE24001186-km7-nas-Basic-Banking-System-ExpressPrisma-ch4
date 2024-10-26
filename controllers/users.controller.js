@@ -4,8 +4,10 @@ class UserController {
 
   async getAllUser(req, res) {
     try {
+      
+      // Jika token valid, maka dapat mengakses endpoint
       const users = await prisma.users.findMany();
-      res.json(users);
+      res.status(200).json(users); 
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

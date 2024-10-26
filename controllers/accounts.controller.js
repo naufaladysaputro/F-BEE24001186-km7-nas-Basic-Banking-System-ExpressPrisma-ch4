@@ -106,6 +106,82 @@ class AccountController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  async deposit(req, res) {
+    try {
+      const { id } = req.params; // Mendapatkan ID akun dari parameter
+      const { amount } = req.body; // Mendapatkan jumlah deposit dari body request
+      
+      // Validasi input
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Amount must be a positive number" });
+      }
+
+      // Cari akun berdasarkan ID
+      const account = await prisma.bankAccounts.findUnique({
+        where: { id: parseInt(id) },
+      });
+      if (!account) {
+        return res.status(404).json({ error: "Account not found" });
+      }
+
+      // Update saldo dengan menambah jumlah deposit
+      const updatedAccount = await prisma.bankAccounts.update({
+        where: { id: parseInt(id) },
+        data: {
+          balance: account.balance + parseFloat(amount),
+        },
+      });
+
+      res.json({
+        message: `Deposit berhasil. Saldo baru: Rp.${updatedAccount.balance}`,
+        account: updatedAccount,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  async withdraw(req, res) {
+    try {
+      const { id } = req.params; // Mendapatkan ID akun dari parameter
+      const { amount } = req.body; // Mendapatkan jumlah withdraw dari body request
+      
+      // Validasi input
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Amount must be a positive number" });
+      }
+
+      // Cari akun berdasarkan ID
+      const account = await prisma.bankAccounts.findUnique({
+        where: { id: parseInt(id) },
+      });
+      if (!account) {
+        return res.status(404).json({ error: "Account not found" });
+      }
+
+      // Periksa apakah saldo cukup untuk penarikan
+      if (account.balance < parseFloat(amount)) {
+        return res.status(400).json({ error: "Insufficient balance" });
+      }
+
+      // Update saldo dengan mengurangi jumlah withdraw
+      const updatedAccount = await prisma.bankAccounts.update({
+        where: { id: parseInt(id) },
+        data: {
+          balance: account.balance - parseFloat(amount),
+        },
+      });
+
+      res.json({
+        message: `Withdraw berhasil. Saldo baru: Rp.${updatedAccount.balance}`,
+        account: updatedAccount,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
 }
 
 
