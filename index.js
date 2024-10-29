@@ -13,7 +13,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+//swagger
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./docs/openapi.json");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 app.use(routes);
+app.use((err, req, res, next) => {
+  res.status(err.status).json({
+      status: false,
+      message: err.message
+  })
+})
 
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);

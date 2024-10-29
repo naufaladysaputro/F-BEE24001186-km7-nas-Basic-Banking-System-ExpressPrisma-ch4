@@ -3,48 +3,45 @@ const { Prisma } = require('@prisma/client'); // Tambahkan baris ini
 
 class AccountController {
   
-  async getAllAccounts (req, res) {
+  async getAllAccounts(req, res) {
     try {
-      const accounts = await prisma.bankAccounts.findMany(); // Ubah di sini
+      const accounts = await prisma.bankAccount.findMany();
       res.json(accounts);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  };
+  }
 
-  async getAccountById (req, res) {
+  async getAccountById(req, res) {
     try {
       const { id } = req.params;
-      const account = await prisma.bankAccounts.findUnique({ // Ubah di sini
-        where: {
-          id: parseInt(id), // pastikan id dikonversi menjadi angka
-        },
+      const account = await prisma.bankAccount.findUnique({
+        where: { id: parseInt(id) },
       });
       if (!account) {
-        return res.status(400).json({ error: "Account id not found" });
+        return res.status(404).json({ error: "Account not found" });
       }
       res.json(account);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  };
+  }
 
-  async createAccount (req, res) {
+  async createAccount(req, res) {
     try {
-      const { bank_name, account_number, balance, userId } = req.body; // Perbaiki nama parameter untuk konsistensi
-      console.log("Request Body:", req.body);
-  
+      const { bankName, accountNumber, balance, userId } = req.body;
+
       // Validasi input
-      if (!bank_name || !account_number || !balance || !userId) {
+      if (!bankName || !accountNumber || balance === undefined || !userId) {
         return res.status(400).json({
-          error: "Bank Name, Account Number, Balance, and userId are required",
+          error: "Bank Name, Account Number, Balance, and UserId are required",
         });
       }
-  
-      const account = await prisma.bankAccounts.create({ // Ubah di sini
+
+      const account = await prisma.bankAccount.create({
         data: {
-          bank_name,
-          account_number,
+          bankName,
+          accountNumber: parseInt(accountNumber),
           balance,
           userId,
         },
@@ -53,29 +50,28 @@ class AccountController {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  };
+  }
 
-  async updateAccount (req, res) {
+  async updateAccount(req, res) {
     try {
       const { id } = req.params;
-      const { bank_name, account_number, balance } = req.body; // Perbaiki nama parameter untuk konsistensi
-      console.log(req.body);
-  
-      const existingAccount = await prisma.bankAccounts.findUnique({ // Ubah di sini
-        where: { id: parseInt(id) }, // pastikan id dikonversi menjadi angka
+      const { bankName, accountNumber, balance } = req.body;
+
+      const existingAccount = await prisma.bankAccount.findUnique({
+        where: { id: parseInt(id) },
       });
       if (!existingAccount) {
-        return res.status(400).json({ error: "Account not found" });
+        return res.status(404).json({ error: "Account not found" });
       }
-  
+
       const updatedData = {
-        bank_name: bank_name || existingAccount.bank_name,
-        account_number: account_number || existingAccount.account_number,
-        balance: parseInt(balance) || existingAccount.balance,
+        bankName: bankName || existingAccount.bankName,
+        accountNumber: accountNumber ? parseInt(accountNumber) : existingAccount.accountNumber,
+        balance: balance !== undefined ? parseFloat(balance) : existingAccount.balance,
       };
-  
-      const updatedAccount = await prisma.bankAccounts.update({ // Ubah di sini
-        where: { id: parseInt(id) }, // pastikan id dikonversi menjadi angka
+
+      const updatedAccount = await prisma.bankAccount.update({
+        where: { id: parseInt(id) },
         data: updatedData,
       });
       res.json(updatedAccount);
@@ -90,13 +86,13 @@ class AccountController {
         res.status(500).json({ error: error.message });
       }
     }
-  };
+  }
 
-  async deleteAccount (req, res) {
+  async deleteAccount(req, res) {
     try {
       const { id } = req.params;
-      const deletedAccount = await prisma.bankAccounts.delete({ // Ubah di sini
-        where: { id: parseInt(id) }, // pastikan id dikonversi menjadi angka
+      const deletedAccount = await prisma.bankAccount.delete({
+        where: { id: parseInt(id) },
       });
       res.json({
         ...deletedAccount,
@@ -105,8 +101,77 @@ class AccountController {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  };
-}
+  }
 
+  async deposit(req, res) {
+    try {
+      const { id } = req.params;
+      const { amount } = req.body;
+
+      // Validasi input
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Amount must be a positive number" });
+      }
+
+      const account = await prisma.bankAccount.findUnique({
+        where: { id: parseInt(id) },
+      });
+      if (!account) {
+        return res.status(404).json({ error: "Account not found" });
+      }
+
+      const updatedAccount = await prisma.bankAccount.update({
+        where: { id: parseInt(id) },
+        data: {
+          balance: account.balance + parseFloat(amount),
+        },
+      });
+
+      res.json({
+        message: `Deposit berhasil. Saldo baru: Rp.${updatedAccount.balance}`,
+        account: updatedAccount,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  async withdraw(req, res) {
+    try {
+      const { id } = req.params;
+      const { amount } = req.body;
+
+      // Validasi input
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Amount must be a positive number" });
+      }
+
+      const account = await prisma.bankAccount.findUnique({
+        where: { id: parseInt(id) },
+      });
+      if (!account) {
+        return res.status(404).json({ error: "Account not found" });
+      }
+
+      if (account.balance < parseFloat(amount)) {
+        return res.status(400).json({ error: "Insufficient balance" });
+      }
+
+      const updatedAccount = await prisma.bankAccount.update({
+        where: { id: parseInt(id) },
+        data: {
+          balance: account.balance - parseFloat(amount),
+        },
+      });
+
+      res.json({
+        message: `Withdraw berhasil. Saldo baru: Rp.${updatedAccount.balance}`,
+        account: updatedAccount,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+}
 
 module.exports = new AccountController();
