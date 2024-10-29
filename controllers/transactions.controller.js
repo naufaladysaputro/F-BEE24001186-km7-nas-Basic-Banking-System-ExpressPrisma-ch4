@@ -1,34 +1,33 @@
 const prisma = require("../config/prisma");
 
-
 class TransactionController {
-  async createTransaction (req, res) {
+  async createTransaction(req, res) {
     try {
-      const { amount, source_account_id, destination_account_id } = req.body;
+      const { amount, sourceAccountId, destinationAccountId } = req.body; // Ganti penamaan di sini
       console.log(req.body);
   
       // Validasi input
-      if (!amount || !source_account_id || !destination_account_id) {
+      if (!amount || !sourceAccountId || !destinationAccountId) {
         return res.status(400).json({ error: "Missing required fields" });
       }
   
-      const transaction = await prisma.transactions.create({
+      const transaction = await prisma.transaction.create({
         data: {
           amount,
-          source_account_id, // Memastikan penggunaan nama yang sesuai
-          destination_account_id, // Memastikan penggunaan nama yang sesuai
+          sourceAccountId, // Memastikan penggunaan nama yang sesuai
+          destinationAccountId, // Memastikan penggunaan nama yang sesuai
         },
       });
       res.json(transaction);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  };
+  }
 
-  async getTransactionById (req, res) {
+  async getTransactionById(req, res) {
     try {
       const { id } = req.params;
-      const detail = await prisma.transactions.findUnique({
+      const detail = await prisma.transaction.findUnique({
         where: {
           id: Number(id), // Konversi id ke angka
         },
@@ -41,30 +40,30 @@ class TransactionController {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  };
+  }
 
-  async getAllTransactions (req, res) {
+  async getAllTransactions(req, res) {
     try {
-      const list = await prisma.transactions.findMany();
+      const list = await prisma.transaction.findMany();
       res.json(list);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  };
+  }
 
-  // async deposit  (req, res) {
+  // async deposit(req, res) {
   //   try {
-  //     const { amount, account_id } = req.body;
+  //     const { amount, accountId } = req.body; // Ganti penamaan di sini
   
   //     // Validasi input
-  //     if (!amount || !account_id) {
+  //     if (!amount || !accountId) {
   //       return res.status(400).json({ error: "Missing required fields" });
   //     }
   
   //     // Ambil rekening dari database untuk mendapatkan saldo terkini
-  //     const account = await prisma.bankAccounts.findUnique({
+  //     const account = await prisma.bankAccount.findUnique({
   //       where: {
-  //         id: account_id,
+  //         id: accountId,
   //       },
   //     });
   
@@ -76,9 +75,9 @@ class TransactionController {
   //     const newBalance = account.balance + parseFloat(amount);
   
   //     // Update saldo di database
-  //     await prisma.bankAccounts.update({
+  //     await prisma.bankAccount.update({
   //       where: {
-  //         id: account_id,
+  //         id: accountId,
   //       },
   //       data: {
   //         balance: newBalance,
@@ -86,11 +85,11 @@ class TransactionController {
   //     });
   
   //     // Simpan transaksi ke database
-  //     const transaction = await prisma.transactions.create({
+  //     const transaction = await prisma.transaction.create({
   //       data: {
   //         amount: parseFloat(amount),
-  //         source_account_id: account_id, // Akun sumber untuk deposit
-  //         destination_account_id: account_id, // Akun tujuan untuk deposit
+  //         sourceAccountId: accountId, // Akun sumber untuk deposit
+  //         destinationAccountId: accountId, // Akun tujuan untuk deposit
   //       },
   //     });
   
@@ -98,21 +97,21 @@ class TransactionController {
   //   } catch (error) {
   //     res.status(500).json({ error: error.message });
   //   }
-  // };
+  // }
 
-  // async withdraw  (req, res) {
+  // async withdraw(req, res) {
   //   try {
-  //     const { amount, account_id } = req.body;
+  //     const { amount, accountId } = req.body; // Ganti penamaan di sini
   
   //     // Validasi input
-  //     if (!amount || !account_id) {
+  //     if (!amount || !accountId) {
   //       return res.status(400).json({ error: "Missing required fields" });
   //     }
   
   //     // Ambil rekening dari database untuk mendapatkan saldo terkini
-  //     const account = await prisma.bankAccounts.findUnique({
+  //     const account = await prisma.bankAccount.findUnique({
   //       where: {
-  //         id: account_id,
+  //         id: accountId,
   //       },
   //     });
   
@@ -129,9 +128,9 @@ class TransactionController {
   //     const newBalance = account.balance - parseFloat(amount);
   
   //     // Update saldo di database
-  //     await prisma.bankAccounts.update({
+  //     await prisma.bankAccount.update({
   //       where: {
-  //         id: account_id,
+  //         id: accountId,
   //       },
   //       data: {
   //         balance: newBalance,
@@ -139,11 +138,11 @@ class TransactionController {
   //     });
   
   //     // Simpan transaksi ke database
-  //     const transaction = await prisma.transactions.create({
+  //     const transaction = await prisma.transaction.create({
   //       data: {
   //         amount: parseFloat(amount),
-  //         source_account_id: account_id, // Akun sumber untuk penarikan
-  //         destination_account_id: account_id, // Akun tujuan untuk penarikan
+  //         sourceAccountId: accountId, // Akun sumber untuk penarikan
+  //         destinationAccountId: accountId, // Akun tujuan untuk penarikan
   //       },
   //     });
   
@@ -151,8 +150,7 @@ class TransactionController {
   //   } catch (error) {
   //     res.status(500).json({ error: error.message });
   //   }
-  // };
-  
+  // }
 }
 
 module.exports = new TransactionController();

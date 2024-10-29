@@ -1,0 +1,1795 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "challlenge 5 BE",
+    "description": "Development For Challenge 5 Binar Back End Dashboard for a library designed to manage library data and a library website utilizing, Express.js as the backend, Postgress as the Database Management System (DBMS), and Prisma (ORM).",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "users"
+    },
+    {
+      "name": "auth"
+    },
+    {
+      "name": "accounts"
+    },
+    {
+      "name": "transactions"
+    }
+  ],
+  "paths": {
+    "/api/v1/users/": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "all user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "1394"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"572-GYWDzUcHi3gYXNZ1kHufEbiiajM\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:04:41 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "email": "naufaladys@mail.com",
+                    "name": "naufal",
+                    "password": "$2b$10$3bXsSegBpEV.nCTCDImxc.34CL6z8hZWNmiaR1AOIH3tpgqQuhavC",
+                    "profile": {
+                      "id": 1,
+                      "identityType": "KTP",
+                      "identityNumber": 123456789,
+                      "address": "Jl. Merdeka No. 123, Jakarta",
+                      "userId": 1
+                    }
+                  },
+                  {
+                    "id": 2,
+                    "email": "naufalady@mail.com",
+                    "name": "naufal",
+                    "password": "$2b$10$ldGzma52WCPv4vPLxwIhSeZjyJbeDaJviqG7yHNBtGUNR9bFeFf0C",
+                    "profile": {
+                      "id": 2,
+                      "identityType": "KTP",
+                      "identityNumber": 123456789,
+                      "address": "Jl. Merdeka No. 123, Jakarta",
+                      "userId": 2
+                    }
+                  },
+                  {
+                    "id": 3,
+                    "email": "ijal@mail.com",
+                    "name": "ijal",
+                    "password": "123457880",
+                    "profile": {
+                      "id": 3,
+                      "identityType": "KTP",
+                      "identityNumber": 123456719,
+                      "address": "Jl. Merpati No. 4",
+                      "userId": 3
+                    }
+                  },
+                  {
+                    "id": 4,
+                    "email": "denis@mail.com",
+                    "name": "denis",
+                    "password": "123457881",
+                    "profile": {
+                      "id": 4,
+                      "identityType": "KTP",
+                      "identityNumber": 123456719,
+                      "address": "Jl. Merpati No. 4",
+                      "userId": 4
+                    }
+                  },
+                  {
+                    "id": 5,
+                    "email": "rudi@mail.com",
+                    "name": "rudi",
+                    "password": "123457882",
+                    "profile": {
+                      "id": 5,
+                      "identityType": "KTP",
+                      "identityNumber": 123456719,
+                      "address": "Jl. Merpati No. 4",
+                      "userId": 5
+                    }
+                  },
+                  {
+                    "id": 6,
+                    "email": "bambang@mail.com",
+                    "name": "bambang",
+                    "password": "123457883",
+                    "profile": {
+                      "id": 6,
+                      "identityType": "KTP",
+                      "identityNumber": 123456719,
+                      "address": "Jl. Merpati No. 4",
+                      "userId": 6
+                    }
+                  },
+                  {
+                    "id": 7,
+                    "email": "bayu@mail.com",
+                    "name": "bayu",
+                    "password": "123457884",
+                    "profile": {
+                      "id": 7,
+                      "identityType": "KTP",
+                      "identityNumber": 123456719,
+                      "address": "Jl. Merpati No. 4",
+                      "userId": 7
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "agus@mail.com",
+                  "name": "agus",
+                  "password": "123457777",
+                  "identity_type": "KTP",
+                  "identity_number": 123456709,
+                  "address": "Jl. Merpati No. 3"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "183"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"b7-ZIucdnCwaPRi4R/qmSnSc8AV7yI\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:00:20 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 6,
+                  "email": "bambang@mail.com",
+                  "name": "bambang",
+                  "password": "123457883",
+                  "profile": {
+                    "id": 6,
+                    "identityType": "KTP",
+                    "identityNumber": 123456719,
+                    "address": "Jl. Merpati No. 4",
+                    "userId": 6
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "81"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"51-Ea+z+kVCscc2hHnR5x2ilvDvC78\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:29:47 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "status": false,
+                  "message": "\"identityType\" must be one of [KTP, Passport, SIM]"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/7": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "177"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"b1-zDHEtjq/fQJGftVUQ4xPlcs/e8U\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Tue, 29 Oct 2024 12:08:09 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 7,
+                  "email": "bayu@mail.com",
+                  "name": "bayu",
+                  "password": "123457884",
+                  "profile": {
+                    "id": 7,
+                    "identityType": "KTP",
+                    "identityNumber": 123456719,
+                    "address": "Jl. Merpati No. 4",
+                    "userId": 7
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "bayu@mail.com",
+                  "name": "bayu",
+                  "password": "123457884",
+                  "identityType": "KTP",
+                  "identityNumber": 123456719,
+                  "address": "Jl. Merpati No. 4"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "177"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"b1-zDHEtjq/fQJGftVUQ4xPlcs/e8U\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Tue, 29 Oct 2024 12:09:21 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 7,
+                  "email": "bayu@mail.com",
+                  "name": "bayu",
+                  "password": "123457884",
+                  "profile": {
+                    "id": 7,
+                    "identityType": "KTP",
+                    "identityNumber": 123456719,
+                    "address": "Jl. Merpati No. 4",
+                    "userId": 7
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "82"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"52-UNFEwANttvhvasUX4dvpAJk7vQw\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Sun, 27 Oct 2024 20:06:57 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "status": false,
+                  "message": "\"identity_type\" must be one of [KTP, Passport, SIM]"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/8": {
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "summary": "delete",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "35"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"23-Taave6hV16yC4A+oBQfDrXGl3UI\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:03:04 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "message": "Data has been deleted"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "naufalady@mail.com",
+                  "password": "naufal123",
+                  "name": "naufal",
+                  "identityType": "KTP",
+                  "identityNumber": 123456789,
+                  "address": "Jl. Merdeka No. 123, Jakarta"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "37"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"25-18OjcpUEMiVZVBGsWtptK5Nkn4g\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 20:45:03 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "message": "Registration successful"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "naufaladys@mail.com",
+                  "password": "naufals123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "189"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"bd-PjGRXOXvEAJbrT6nWNM+KCWGSFo\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 19:20:29 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJuYXVmYWxhZHlzQG1haWwuY29tIiwiaWF0IjoxNzMwMTQzMjI5LCJleHAiOjE3MzAxNDY4Mjl9.ul6rCQURrW65VQakJ3yIwXDBvs_UH2YzumgOoyPERnw"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/profile": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "by token",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "47"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"2f-EfhRfiAk8zN6NKpa4bOk59sBl1Q\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 20:49:12 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "email": "naufaladys@mail.com",
+                  "name": "naufal"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/accounts/": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "all acount",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "982"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"3d6-PBgX77GcF7cxeBd+HXRL6Tgx9bc\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:18:01 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "bankName": "Bank BNI",
+                    "accountNumber": 1234567895,
+                    "balance": 1000,
+                    "createdAt": "2024-10-28T21:10:30.178Z",
+                    "updatedAt": "2024-10-28T21:10:30.178Z",
+                    "userId": 1
+                  },
+                  {
+                    "id": 2,
+                    "bankName": "Bank BNI",
+                    "accountNumber": 1234567895,
+                    "balance": 1000,
+                    "createdAt": "2024-10-28T21:10:46.690Z",
+                    "updatedAt": "2024-10-28T21:10:46.690Z",
+                    "userId": 2
+                  },
+                  {
+                    "id": 4,
+                    "bankName": "Bank DANAMON",
+                    "accountNumber": 1234567895,
+                    "balance": 1000,
+                    "createdAt": "2024-10-28T21:11:53.432Z",
+                    "updatedAt": "2024-10-28T21:11:53.432Z",
+                    "userId": 4
+                  },
+                  {
+                    "id": 5,
+                    "bankName": "Bank BCA",
+                    "accountNumber": 1234567895,
+                    "balance": 1000,
+                    "createdAt": "2024-10-28T21:12:06.951Z",
+                    "updatedAt": "2024-10-28T21:12:06.951Z",
+                    "userId": 5
+                  },
+                  {
+                    "id": 6,
+                    "bankName": "Bank BCA",
+                    "accountNumber": 1234567895,
+                    "balance": 1000,
+                    "createdAt": "2024-10-28T21:14:55.172Z",
+                    "updatedAt": "2024-10-28T21:14:55.172Z",
+                    "userId": 6
+                  },
+                  {
+                    "id": 3,
+                    "bankName": "Bank MANDIRI",
+                    "accountNumber": 1234567895,
+                    "balance": 15000,
+                    "createdAt": "2024-10-28T21:11:48.131Z",
+                    "updatedAt": "2024-10-28T21:17:26.951Z",
+                    "userId": 3
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "bankName": "Bank MANDIRI",
+                  "accountNumber": 1234567895,
+                  "balance": 1000,
+                  "userId": 7
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "161"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"a1-3X09kQtH0hhtiYLrVviqb2ivgb0\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:10:30 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 1,
+                  "bankName": "Bank BNI",
+                  "accountNumber": 1234567895,
+                  "balance": 1000,
+                  "createdAt": "2024-10-28T21:10:30.178Z",
+                  "updatedAt": "2024-10-28T21:10:30.178Z",
+                  "userId": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/accounts/3": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "166"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"a6-Kr1tIpsQWX9DoIXlZoFuuaStMbo\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:18:13 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 3,
+                  "bankName": "Bank MANDIRI",
+                  "accountNumber": 1234567895,
+                  "balance": 15000,
+                  "createdAt": "2024-10-28T21:11:48.131Z",
+                  "updatedAt": "2024-10-28T21:17:26.951Z",
+                  "userId": 3
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "bankName": "Bank MANDIRI",
+                  "accountNumber": 1234567895,
+                  "balance": 15000
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "166"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"a6-64trbu5isxRZG4tBmXzx4IMlAig\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:16:06 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 3,
+                  "bankName": "Bank MANDIRI",
+                  "accountNumber": 1234567895,
+                  "balance": 15000,
+                  "createdAt": "2024-10-28T21:11:48.131Z",
+                  "updatedAt": "2024-10-28T21:16:06.292Z",
+                  "userId": 3
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/accounts/3/deposit": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "deposit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "amount": 500
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "229"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"e5-iAjVG3v05qDynN5JKymGj4Nv3E8\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:17:06 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "message": "Deposit berhasil. Saldo baru: Rp.15500",
+                  "account": {
+                    "id": 3,
+                    "bankName": "Bank MANDIRI",
+                    "accountNumber": 1234567895,
+                    "balance": 15500,
+                    "createdAt": "2024-10-28T21:11:48.131Z",
+                    "updatedAt": "2024-10-28T21:17:06.152Z",
+                    "userId": 3
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/accounts/3/withdraw": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "withdraw",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "amount": 500
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "230"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"e6-CRyZclpePPyOo9AhE9qHPemXDhw\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:17:26 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "message": "Withdraw berhasil. Saldo baru: Rp.15000",
+                  "account": {
+                    "id": 3,
+                    "bankName": "Bank MANDIRI",
+                    "accountNumber": 1234567895,
+                    "balance": 15000,
+                    "createdAt": "2024-10-28T21:11:48.131Z",
+                    "updatedAt": "2024-10-28T21:17:26.951Z",
+                    "userId": 3
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/accounts/7": {
+      "delete": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "delete",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "206"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"ce-1ws3mUNmsi5ljjBatS/KRfBCGAc\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:17:46 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 7,
+                  "bankName": "Bank MANDIRI",
+                  "accountNumber": 1234567895,
+                  "balance": 1000,
+                  "createdAt": "2024-10-28T21:15:07.999Z",
+                  "updatedAt": "2024-10-28T21:15:07.999Z",
+                  "userId": 7,
+                  "message": "Account successfully deleted"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/transactions/": {
+      "get": {
+        "tags": [
+          "transactions"
+        ],
+        "summary": "all data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "202"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"ca-zK40lkuq93CVRhC7VUeJxIEqcfo\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Tue, 29 Oct 2024 12:24:07 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "amount": 500,
+                    "sourceAccountId": 3,
+                    "destinationAccountId": 2
+                  },
+                  {
+                    "id": 2,
+                    "amount": 500,
+                    "sourceAccountId": 1,
+                    "destinationAccountId": 2
+                  },
+                  {
+                    "id": 3,
+                    "amount": 500,
+                    "sourceAccountId": 4,
+                    "destinationAccountId": 2
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "transactions"
+        ],
+        "summary": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "amount": 500,
+                  "sourceAccountId": 4,
+                  "destinationAccountId": 2
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "66"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"42-PBaDwD5hKEEsCReDcFVDKprIvJ0\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Tue, 29 Oct 2024 12:23:22 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 3,
+                  "amount": 500,
+                  "sourceAccountId": 4,
+                  "destinationAccountId": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/transactions/2": {
+      "get": {
+        "tags": [
+          "transactions"
+        ],
+        "summary": "by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "66"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"42-Npy9jmL8/pc5Ccr/rpHZiUcOVks\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Mon, 28 Oct 2024 21:21:04 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 2,
+                  "amount": 500,
+                  "sourceAccountId": 1,
+                  "destinationAccountId": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

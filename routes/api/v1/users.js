@@ -10,9 +10,9 @@ const { updateUserSchema } = require("../../../middleware/joi.user.scema");
 const { deleteUsersByIdSchema } = require("../../../middleware/joi.user.scema");
 
 router.get("/", authenticate, userController.getAllUser);
-router.get("/:id", validate(getUserByIdSchema),userController.getUserById);
+router.get("/:id", authenticate, validate(getUserByIdSchema, "params"),userController.getUserById);
 router.post("/", validate(createUserSchema),userController.createUserWithProfile);
-router.put("/:id", validate(updateUserSchema), userController.updateUsersWithProfile);
-router.delete("/:id", validate(deleteUsersByIdSchema),userController.deleteUsersById);
+router.put("/:id", authenticate, validate(updateUserSchema), userController.updateUsersWithProfile);
+router.delete("/:id", authenticate, validate(deleteUsersByIdSchema, "params"),userController.deleteUsersById);
 
 module.exports = router;

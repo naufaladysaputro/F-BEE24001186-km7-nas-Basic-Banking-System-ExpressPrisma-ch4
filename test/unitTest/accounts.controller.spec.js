@@ -1,408 +1,288 @@
 const AccountController = require("../../controllers/accounts.controller.js");
-
+const prisma = require("../../config/prisma.js");
 
 // Mock Prisma Client
 jest.mock("../../config/prisma.js", () => ({
-  bankAccounts: {
-    findMany: jest.fn(),
-    findUnique: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-  },
-  users: {
-    create: jest.fn(),
-    update: jest.fn(),
-  },
+    bankAccount: {
+        findMany: jest.fn(),
+        findUnique: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
+    },
 }));
 
-
-  
-
-const prisma = require("../../config/prisma.js");
-
-beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-
 describe("AccountController", () => {
+    let req, res;
 
-  // Test getAllAccounts
-  describe("getAllAccounts", () => {
-    it("should return all accounts with status 200", async () => {
-      const mockAccounts = [
-        { id: 1, bank_name: "Bank A", account_number: "1234567890", balance: 1000 },
-        { id: 2, bank_name: "Bank B", account_number: "9876543210", balance: 2000 },
-      ];
-      prisma.bankAccounts.findMany.mockResolvedValue(mockAccounts);
-
-      const req = {};
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.getAllAccounts(req, res);
-
-      expect(res.json).toHaveBeenCalledWith(mockAccounts);
-      expect(prisma.bankAccounts.findMany).toHaveBeenCalledTimes(1);
+    beforeEach(() => {
+        req = {};
+        res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
+        };
     });
 
-    it("should return 500 if there is an error", async () => {
-      prisma.bankAccounts.findMany.mockRejectedValue(new Error("Database error"));
+    describe("getAllAccounts", () => {
+        it("should return all accounts with status 200", async () => {
+            const mockAccounts = [
+                { id: 1, bankName: "Bank A", accountNumber: "123456", balance: 1000 },
+                { id: 2, bankName: "Bank B", accountNumber: "654321", balance: 2000 },
+            ];
 
-      const req = {};
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
+            prisma.bankAccount.findMany.mockResolvedValue(mockAccounts);
 
-      };
+            await AccountController.getAllAccounts(req, res);
 
-      await AccountController.getAllAccounts(req, res);
+            expect(res.json).toHaveBeenCalledWith(mockAccounts);
+        });
 
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
-    });
-  });
+        it("should return 500 if there is an error", async () => {
+            prisma.bankAccount.findMany.mockRejectedValue(new Error("Database error"));
 
-  // Test getAccountById
-  describe("getAccountById", () => {
-    it("should return the account with the specified id and status 200", async () => {
-      const mockAccount = { id: 1, bank_name: "Bank A", account_number: "1234567890", balance: 1000 };
-      prisma.bankAccounts.findUnique.mockResolvedValue(mockAccount);
+            await AccountController.getAllAccounts(req, res);
 
-      const req = { params: { id: "1" } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.getAccountById(req, res);
-
-      expect(res.json).toHaveBeenCalledWith(mockAccount);
-      expect(prisma.bankAccounts.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
+        });
     });
 
-    it("should return 400 if account with specified id is not found", async () => {
-      prisma.bankAccounts.findUnique.mockResolvedValue(null);
+    describe("getAccountById", () => {
+        it("should return account by ID with status 200", async () => {
+            req.params = { id: "1" };
+            const mockAccount = { id: 1, bankName: "Bank A", accountNumber: "123456", balance: 1000 };
 
-      const req = { params: { id: "99" } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+            prisma.bankAccount.findUnique.mockResolvedValue(mockAccount);
 
-      await AccountController.getAccountById(req, res);
+            await AccountController.getAccountById(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: "Account id not found" });
+            expect(res.json).toHaveBeenCalledWith(mockAccount);
+        });
+
+        it("should return 404 if account not found", async () => {
+            req.params = { id: "1" };
+            prisma.bankAccount.findUnique.mockResolvedValue(null);
+
+            await AccountController.getAccountById(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith({ error: "Account not found" });
+        });
+
+        it("should return 500 if there is an error", async () => {
+            req.params = { id: "1" };
+            prisma.bankAccount.findUnique.mockRejectedValue(new Error("Database error"));
+
+            await AccountController.getAccountById(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
+        });
     });
 
-    it("should return 500 if there is a server error", async () => {
-      prisma.bankAccounts.findUnique.mockRejectedValue(new Error("Database error"));
+    describe("createAccount", () => {
+        it("should create a new account with status 200", async () => {
+            req.body = { bankName: "Bank A", accountNumber: "123456", balance: 1000, userId: 1 };
+            const mockAccount = { id: 1, bankName: "Bank A", accountNumber: "123456", balance: 1000, userId: 1 };
 
-      const req = { params: { id: "1" } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+            prisma.bankAccount.create.mockResolvedValue(mockAccount);
 
-      await AccountController.getAccountById(req, res);
+            await AccountController.createAccount(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
-    });
-  });
+            expect(res.json).toHaveBeenCalledWith(mockAccount);
+        });
 
-  // Test createAccount
-  describe("createAccount", () => {
-    it("should create an account and return it with status 200", async () => {
-      const mockAccount = { id: 1, bank_name: "Bank A", account_number: "1234567890", balance: 1000, userId: 1 };
-      prisma.bankAccounts.create.mockResolvedValue(mockAccount);
+        it("should return 400 if required fields are missing", async () => {
+            req.body = { bankName: "Bank A" }; // Missing required fields
 
-      const req = {
-        body: {
-          bank_name: "Bank A",
-          account_number: "1234567890",
-          balance: 1000,
-          userId: 1,
-        },
-      };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+            await AccountController.createAccount(req, res);
 
-      await AccountController.createAccount(req, res);
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.json).toHaveBeenCalledWith({
+                error: "Bank Name, Account Number, Balance, and UserId are required",
+            });
+        });
 
-      expect(res.json).toHaveBeenCalledWith(mockAccount);
-      expect(prisma.bankAccounts.create).toHaveBeenCalledWith({
-        data: {
-          bank_name: "Bank A",
-          account_number: "1234567890",
-          balance: 1000,
-          userId: 1,
-        },
-      });
+        it("should return 500 if there is an error", async () => {
+            req.body = { bankName: "Bank A", accountNumber: "123456", balance: 1000, userId: 1 };
+            prisma.bankAccount.create.mockRejectedValue(new Error("Database error"));
+
+            await AccountController.createAccount(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
+        });
     });
 
-    it("should return 400 if required fields are missing", async () => {
-      const req = { body: {} };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+    describe("updateAccount", () => {
+        it("should update an existing account with status 200", async () => {
+            req.params = { id: "1" };
+            req.body = { bankName: "Bank B" };
+            const existingAccount = { id: 1, bankName: "Bank A", accountNumber: "123456", balance: 1000 };
 
-      await AccountController.createAccount(req, res);
+            prisma.bankAccount.findUnique.mockResolvedValue(existingAccount);
+            prisma.bankAccount.update.mockResolvedValue({ ...existingAccount, bankName: "Bank B" });
 
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        error: "Bank Name, Account Number, Balance, and userId are required",
-      });
+            await AccountController.updateAccount(req, res);
+
+            expect(res.json).toHaveBeenCalledWith({ ...existingAccount, bankName: "Bank B" });
+        });
+
+        it("should return 404 if account not found", async () => {
+            req.params = { id: "1" };
+            req.body = { bankName: "Bank B" };
+
+            prisma.bankAccount.findUnique.mockResolvedValue(null);
+
+            await AccountController.updateAccount(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith({ error: "Account not found" });
+        });
+
+        it("should return 500 if there is an error", async () => {
+            req.params = { id: "1" };
+            req.body = { bankName: "Bank B" };
+            prisma.bankAccount.findUnique.mockResolvedValue({ id: 1 });
+            prisma.bankAccount.update.mockRejectedValue(new Error("Database error"));
+
+            await AccountController.updateAccount(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
+        });
     });
 
-    it("should return 500 if there is a server error", async () => {
-      prisma.bankAccounts.create.mockRejectedValue(new Error("Database error"));
+    describe("deleteAccount", () => {
+        it("should delete an existing account with status 200", async () => {
+            req.params = { id: "1" };
+            const mockDeletedAccount = { id: 1, bankName: "Bank A", accountNumber: "123456", balance: 1000 };
 
-      const req = {
-        body: {
-          bank_name: "Bank A",
-          account_number: "1234567890",
-          balance: 1000,
-          userId: 1,
-        },
-      };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+            prisma.bankAccount.delete.mockResolvedValue(mockDeletedAccount);
 
-      await AccountController.createAccount(req, res);
+            await AccountController.deleteAccount(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
-    });
-  });
+            expect(res.json).toHaveBeenCalledWith({
+                ...mockDeletedAccount,
+                message: "Account successfully deleted",
+            });
+        });
 
-  // Test updateAccount
-  describe("updateAccount", () => {
-    it("should update the account and return it with status 200", async () => {
-      const mockUpdatedAccount = { id: 1, bank_name: "Bank A", account_number: "1234567890", balance: 2000 };
-      prisma.bankAccounts.findUnique.mockResolvedValue(mockUpdatedAccount);
-      prisma.bankAccounts.update.mockResolvedValue(mockUpdatedAccount);
+        it("should return 500 if there is an error", async () => {
+            req.params = { id: "1" };
+            prisma.bankAccount.delete.mockRejectedValue(new Error("Database error"));
 
-      const req = { params: { id: "1" }, body: { balance: 2000 } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+            await AccountController.deleteAccount(req, res);
 
-      await AccountController.updateAccount(req, res);
-
-      expect(res.json).toHaveBeenCalledWith(mockUpdatedAccount);
-      expect(prisma.bankAccounts.update).toHaveBeenCalledWith({
-        where: { id: 1 },
-        data: { 
-            account_number: "1234567890",
-            balance: 2000,
-            bank_name: "Bank A",
-        
-        },
-      });
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
+        });
     });
 
-    it("should return 400 if account to update is not found", async () => {
-      prisma.bankAccounts.findUnique.mockResolvedValue(null);
+    describe("deposit", () => {
+        it("should deposit amount and update balance", async () => {
+            req.params = { id: "1" };
+            req.body = { amount: 500 };
+            const existingAccount = { id: 1, balance: 1000 };
 
-      const req = { params: { id: "99" }, body: { balance: 2000 } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+            prisma.bankAccount.findUnique.mockResolvedValue(existingAccount);
+            prisma.bankAccount.update.mockResolvedValue({ ...existingAccount, balance: 1500 });
 
-      await AccountController.updateAccount(req, res);
+            await AccountController.deposit(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: "Account not found" });
+            expect(res.json).toHaveBeenCalledWith({
+                message: "Deposit berhasil. Saldo baru: Rp.1500",
+                account: { ...existingAccount, balance: 1500 },
+            });
+        });
+
+        it("should return 400 if amount is invalid", async () => {
+            req.params = { id: "1" };
+            req.body = { amount: -500 }; // Invalid amount
+
+            await AccountController.deposit(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.json).toHaveBeenCalledWith({ error: "Amount must be a positive number" });
+        });
+
+        it("should return 404 if account not found", async () => {
+            req.params = { id: "1" };
+            req.body = { amount: 500 };
+
+            prisma.bankAccount.findUnique.mockResolvedValue(null);
+
+            await AccountController.deposit(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith({ error: "Account not found" });
+        });
+
+        it("should return 500 if there is an error", async () => {
+            req.params = { id: "1" };
+            req.body = { amount: 500 };
+            prisma.bankAccount.findUnique.mockResolvedValue({ id: 1 });
+            prisma.bankAccount.update.mockRejectedValue(new Error("Database error"));
+
+            await AccountController.deposit(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
+        });
     });
 
-    it("should return 500 if there is a server error", async () => {
-      prisma.bankAccounts.update.mockRejectedValue(new Error("Database error"));
+    describe("withdraw", () => {
+        it("should withdraw amount and update balance", async () => {
+            req.params = { id: "1" };
+            req.body = { amount: 500 };
+            const existingAccount = { id: 1, balance: 1000 };
 
-      const req = { params: { id: "1" }, body: { balance: 2000 } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+            prisma.bankAccount.findUnique.mockResolvedValue(existingAccount);
+            prisma.bankAccount.update.mockResolvedValue({ ...existingAccount, balance: 500 });
 
-      await AccountController.updateAccount(req, res);
+            await AccountController.withdraw(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: "Account not found" });
+            expect(res.json).toHaveBeenCalledWith({
+                message: "Withdraw berhasil. Saldo baru: Rp.500",
+                account: { ...existingAccount, balance: 500 },
+            });
+        });
+
+        it("should return 400 if insufficient balance", async () => {
+            req.params = { id: "1" };
+            req.body = { amount: 1500 };
+            const existingAccount = { id: 1, balance: 1000 };
+
+            prisma.bankAccount.findUnique.mockResolvedValue(existingAccount);
+
+            await AccountController.withdraw(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.json).toHaveBeenCalledWith({ error: "Insufficient balance" });
+        });
+
+        it("should return 404 if account not found", async () => {
+            req.params = { id: "1" };
+            req.body = { amount: 500 };
+
+            prisma.bankAccount.findUnique.mockResolvedValue(null);
+
+            await AccountController.withdraw(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith({ error: "Account not found" });
+        });
+
+        it("should return 500 if there is an error", async () => {
+            req.params = { id: "1" };
+            req.body = { amount: 500 };
+            prisma.bankAccount.findUnique.mockResolvedValue({ id: 1 });
+            prisma.bankAccount.update.mockRejectedValue(new Error("Database error"));
+
+            await AccountController.withdraw(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
+        });
     });
-  });
-
-  // Test deleteAccount
-  describe("deleteAccount", () => {
-    it("should delete the account and return success message with status 200", async () => {
-      const mockAccount = { id: 1, bank_name: "Bank A", account_number: "1234567890", balance: 1000 };
-      prisma.bankAccounts.delete.mockResolvedValue(mockAccount);
-
-      const req = { params: { id: "1" } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.deleteAccount(req, res);
-
-      expect(res.json).toHaveBeenCalledWith({
-        ...mockAccount,
-        message: "Account successfully deleted",
-      });
-      expect(prisma.bankAccounts.delete).toHaveBeenCalledWith({ where: { id: 1 } });
-    });
-
-    it("should return 500 if there is a server error", async () => {
-      prisma.bankAccounts.delete.mockRejectedValue(new Error("Database error"));
-
-      const req = { params: { id: "1" } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.deleteAccount(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
-    });
-  });
-
- // Test deposit
- describe("deposit", () => {
-    it("should deposit an amount and return updated balance", async () => {
-      const mockAccount = { id: 1, balance: 1000 };
-      prisma.bankAccounts.findUnique.mockResolvedValue(mockAccount);
-      prisma.bankAccounts.update.mockResolvedValue({ ...mockAccount, balance: 1500 });
-
-      const req = { params: { id: "1" }, body: { amount: 500 } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.deposit(req, res);
-
-      expect(res.json).toHaveBeenCalledWith({
-        account: { ...mockAccount, balance: 1500 },
-        message: "Deposit berhasil. Saldo baru: Rp.1500"
-      });
-
-      expect(prisma.bankAccounts.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
-      expect(prisma.bankAccounts.update).toHaveBeenCalledWith({
-        where: { id: 1 },
-        data: { balance: 1500 } 
-    });
-    });
-
-    it("should return 400 if amount is not provided", async () => {
-      const req = { params: { id: "1" }, body: {} };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.deposit(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: "Amount must be a positive number" });
-    });
-
-    it("should return 500 if there is a server error", async () => {
-      prisma.bankAccounts.findUnique.mockResolvedValue({ id: 1, balance: 1000 });
-      prisma.bankAccounts.update.mockRejectedValue(new Error("Database error"));
-
-      const req = { params: { id: "1" }, body: { amount: 500 } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.deposit(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
-    });
-  });  
-  
- // Test withdraw
- describe("withdraw", () => {
-    it("should withdraw an amount and return updated balance", async () => {
-      const mockAccount = { id: 1, balance: 1000 };
-      prisma.bankAccounts.findUnique.mockResolvedValue(mockAccount);
-      prisma.bankAccounts.update.mockResolvedValue({ ...mockAccount, balance: 500 });
-
-      const req = { params: { id: "1" }, body: { amount: 500 } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.withdraw(req, res);
-
-      expect(res.json).toHaveBeenCalledWith({
-        account: { ...mockAccount, balance: 500 },
-        message: "Withdraw berhasil. Saldo baru: Rp.500"
-      });
-
-      expect(prisma.bankAccounts.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
-      expect(prisma.bankAccounts.update).toHaveBeenCalledTimes(1);
-    });
-
-    it("should return 400 if amount is not provided", async () => {
-      const req = { params: { id: "1" }, body: {} };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.withdraw(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: "Amount must be a positive number" });
-    });
-
-    it("should return 400 if withdrawal amount exceeds balance", async () => {
-      const req = { params: { id: "1" }, body: { amount: 2000 } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.withdraw(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: "Insufficient balance" });
-    });
-
-    it("should return 500 if there is a server error", async () => {
-      prisma.bankAccounts.findUnique.mockResolvedValue({ id: 1, balance: 1000 });
-      prisma.bankAccounts.update.mockRejectedValue(new Error("Database error"));
-
-      const req = { params: { id: "1" }, body: { amount: 500 } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-
-      await AccountController.withdraw(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
-    });
-  });
-  
-  
 });

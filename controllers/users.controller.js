@@ -4,9 +4,10 @@ class UserController {
 
   async getAllUser(req, res) {
     try {
-      
       // Jika token valid, maka dapat mengakses endpoint
-      const users = await prisma.users.findMany();
+      const users = await prisma.user.findMany({
+        include: { profile: true }, // Include profil dalam respons
+      });
       res.status(200).json(users); 
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -16,13 +17,13 @@ class UserController {
   async getUserById(req, res) {
     try {
       const { id } = req.params;
-      const user = await prisma.users.findUnique({
+      const user = await prisma.user.findUnique({
         where: { id: parseInt(id) },
         include: { profile: true },
       });
 
       if (!user) {
-        return res.status(400).json({ error: "id not found" });
+        return res.status(400).json({ error: "User not found" });
       }
 
       res.json(user);
@@ -33,26 +34,26 @@ class UserController {
 
   async createUserWithProfile(req, res) {
     try {
-      const { email, name, password, identity_type, identity_number, address } = req.body;
+      const { email, name, password, identityType, identityNumber, address } = req.body; // Ganti penamaan di sini
 
       console.log("Request Body:", req.body);
 
       // Validasi input
       if (!email || !name || !password) {
         return res.status(400).json({
-          error: "Email, name, password, are required",
+          error: "Email, name, and password are required",
         });
       }
 
-      const user = await prisma.users.create({
+      const user = await prisma.user.create({
         data: {
           email,
           name,
           password,
           profile: {
             create: {
-              identity_type,
-              identity_number,
+              identityType, // Ganti dengan identityType
+              identityNumber, // Ganti dengan identityNumber
               address,
             },
           },
@@ -68,10 +69,10 @@ class UserController {
   async updateUsersWithProfile(req, res) {
     try {
       const { id } = req.params;
-      const { email, name, password, identity_type, identity_number, address } = req.body;
-      console.log("request body", req.body);
+      const { email, name, password, identityType, identityNumber, address } = req.body; // Ganti penamaan di sini
+      console.log("Request Body:", req.body);
 
-      const existingUser = await prisma.users.findUnique({
+      const existingUser = await prisma.user.findUnique({
         where: { id: parseInt(id) },
         include: { profile: true },
       });
@@ -86,8 +87,8 @@ class UserController {
         password: password || existingUser.password,
         profile: {
           update: {
-            identity_type: identity_type || existingUser.profile?.identity_type,
-            identity_number: identity_number || existingUser.profile?.identity_number,
+            identityType: identityType || existingUser.profile?.identityType, // Ganti dengan identityType
+            identityNumber: identityNumber || existingUser.profile?.identityNumber, // Ganti dengan identityNumber
             address: address || existingUser.profile?.address,
           },
         },
@@ -95,7 +96,7 @@ class UserController {
 
       console.log(updatedData);
 
-      const updatedUser = await prisma.users.update({
+      const updatedUser = await prisma.user.update({
         where: { id: parseInt(id) },
         data: updatedData,
         include: { profile: true },
@@ -111,7 +112,7 @@ class UserController {
     try {
       const { id } = req.params;
 
-      const existingUser = await prisma.users.findUnique({
+      const existingUser = await prisma.user.findUnique({
         where: { id: parseInt(id) },
         include: { profile: true },
       });
@@ -120,11 +121,11 @@ class UserController {
         return res.status(400).json({ error: "User not found" });
       }
 
-      await prisma.profiles.delete({
+      await prisma.profile.delete({
         where: { userId: existingUser.id },
       });
 
-      await prisma.users.delete({
+      await prisma.user.delete({
         where: { id: parseInt(id) },
       });
 

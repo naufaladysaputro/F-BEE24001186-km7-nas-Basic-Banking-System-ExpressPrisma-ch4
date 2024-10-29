@@ -13,42 +13,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
+model User {
   id          Int            @id @default(autoincrement())
-  email       String         @unique
-  name        String
-  password    String
-  profile     Profiles?
-  bankAccount BankAccounts[]
+  email       String         @unique @db.VarChar(255)
+  name        String         @db.VarChar(255)
+  password    String         @db.VarChar(255)
+  profile     Profile?
+  bankAccount BankAccount[]
+
+  @@map("Users")
 }
 
-model Profiles {
-  id              Int    @id @default(autoincrement())
-  identity_type   String
-  identity_number Int
-  address         String
-  user            Users  @relation(fields: [userId], references: [id])
-  userId          Int    @unique
+model Profile {
+  id             Int    @id @default(autoincrement())
+  identityType   String @map("identity_type") @db.VarChar(50)
+  identityNumber Int    @map("identity_number")
+  address        String
+  user           User   @relation(fields: [userId], references: [id])
+  userId         Int    @unique @map("user_id")
+
+  @@map("Profiles")
 }
 
-model BankAccounts {
-  id                      Int            @id @default(autoincrement())
-  bank_name               String
-  account_number          Int
-  balance                 Float
-  created_at              DateTime       @default(now())
-  updated_at              DateTime       @updatedAt
-  user                    Users          @relation(fields: [userId], references: [id])
-  userId                  Int
-  transaction_source      Transactions[] @relation("TransactionSource")
-  transaction_destination Transactions[] @relation("TransactionDestination")
+model BankAccount {
+  id                     Int            @id @default(autoincrement())
+  bankName               String         @map("bank_name")
+  accountNumber          Int            @map("account_number")
+  balance                Float
+  createdAt              DateTime       @default(now()) @map("created_at")
+  updatedAt              DateTime       @updatedAt @map("updated_at")
+  user                   User           @relation(fields: [userId], references: [id])
+  userId                 Int
+  transactionSource      Transaction[] @relation("TransactionSource")
+  transactionDestination Transaction[] @relation("TransactionDestination")
+  @@map("BankAccounts")
 }
 
-model Transactions {
-  id                     Int          @id @default(autoincrement())
-  amount                 Float
-  source_account         BankAccounts @relation("TransactionSource", fields: [source_account_id], references: [id])
-  destination_account    BankAccounts @relation("TransactionDestination", fields: [destination_account_id], references: [id])
-  source_account_id      Int
-  destination_account_id Int
+model Transaction {
+  id                   Int          @id @default(autoincrement())
+  amount               Float
+  sourceAccount        BankAccount @relation("TransactionSource", fields: [sourceAccountId], references: [id])
+  destinationAccount   BankAccount @relation("TransactionDestination", fields: [destinationAccountId], references: [id])
+  sourceAccountId      Int          @map("source_account_id")
+  destinationAccountId Int          @map("destination_account_id")
+  @@map("Transactions")
 }

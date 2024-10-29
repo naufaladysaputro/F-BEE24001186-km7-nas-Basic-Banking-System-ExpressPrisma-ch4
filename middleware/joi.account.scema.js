@@ -2,10 +2,10 @@ const Joi = require('joi').extend(require('@joi/date'));
 
 
 const createAccountSchema = Joi.object({
-    bank_name: Joi.string().required().messages({
+    bankName: Joi.string().required().messages({
       "string.empty": "Bank name is required"
     }),
-    account_number: Joi.number().required().messages({
+    accountNumber: Joi.number().required().messages({
       "string.empty": "Account number is required"
     }),
     balance: Joi.number().min(0).required().messages({
@@ -27,8 +27,8 @@ const createAccountSchema = Joi.object({
   });
 
   const updateAccountSchema = Joi.object({
-    bank_name: Joi.string().optional(),
-    account_number: Joi.string().optional(),
+    bankName: Joi.string().optional(),
+    accountNumber: Joi.number().optional(),
     balance: Joi.number().min(0).optional().messages({
       "number.base": "Balance must be a number",
       "number.min": "Balance cannot be negative"

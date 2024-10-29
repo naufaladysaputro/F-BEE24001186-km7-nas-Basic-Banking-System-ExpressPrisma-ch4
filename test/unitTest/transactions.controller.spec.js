@@ -3,12 +3,12 @@ const prisma = require("../../config/prisma");
 
 // Mock Prisma Client
 jest.mock("../../config/prisma", () => ({
-    transactions: {
+    transaction: {
         create: jest.fn(),
         findUnique: jest.fn(),
         findMany: jest.fn(),
     },
-    bankAccounts: {
+    bankAccount: {
         findUnique: jest.fn(),
         update: jest.fn(),
     },
@@ -30,18 +30,18 @@ describe("TransactionController", () => {
         it("should create a transaction and return it with status 200", async () => {
             req.body = {
                 amount: 100,
-                source_account_id: 1,
-                destination_account_id: 2,
+                sourceAccountId: 1,
+                destinationAccountId: 2,
             };
 
             const mockTransaction = {
                 id: 1,
                 amount: 100,
-                source_account_id: 1,
-                destination_account_id: 2,
+                sourceAccountId: 1,
+                destinationAccountId: 2,
             };
 
-            prisma.transactions.create.mockResolvedValue(mockTransaction);
+            prisma.transaction.create.mockResolvedValue(mockTransaction);
 
             await TransactionController.createTransaction(req, res);
 
@@ -60,11 +60,11 @@ describe("TransactionController", () => {
         it("should return 500 if there is an error", async () => {
             req.body = {
                 amount: 100,
-                source_account_id: 1,
-                destination_account_id: 2,
+                sourceAccountId: 1,
+                destinationAccountId: 2,
             };
 
-            prisma.transactions.create.mockRejectedValue(new Error("Database error"));
+            prisma.transaction.create.mockRejectedValue(new Error("Database error"));
 
             await TransactionController.createTransaction(req, res);
 
@@ -79,11 +79,11 @@ describe("TransactionController", () => {
             const mockTransaction = {
                 id: 1,
                 amount: 100,
-                source_account_id: 1,
-                destination_account_id: 2,
+                sourceAccountId: 1,
+                destinationAccountId: 2,
             };
 
-            prisma.transactions.findUnique.mockResolvedValue(mockTransaction);
+            prisma.transaction.findUnique.mockResolvedValue(mockTransaction);
 
             await TransactionController.getTransactionById(req, res);
 
@@ -92,7 +92,7 @@ describe("TransactionController", () => {
 
         it("should return 404 if transaction is not found", async () => {
             req.params = { id: 1 };
-            prisma.transactions.findUnique.mockResolvedValue(null);
+            prisma.transaction.findUnique.mockResolvedValue(null);
 
             await TransactionController.getTransactionById(req, res);
 
@@ -102,7 +102,7 @@ describe("TransactionController", () => {
 
         it("should return 500 if there is an error", async () => {
             req.params = { id: 1 };
-            prisma.transactions.findUnique.mockRejectedValue(new Error("Database error"));
+            prisma.transaction.findUnique.mockRejectedValue(new Error("Database error"));
 
             await TransactionController.getTransactionById(req, res);
 
@@ -114,11 +114,11 @@ describe("TransactionController", () => {
     describe("getAllTransactions", () => {
         it("should return all transactions with status 200", async () => {
             const mockTransactions = [
-                { id: 1, amount: 100, source_account_id: 1, destination_account_id: 2 },
-                { id: 2, amount: 200, source_account_id: 2, destination_account_id: 3 },
+                { id: 1, amount: 100, sourceAccountId: 1, destinationAccountId: 2 },
+                { id: 2, amount: 200, sourceAccountId: 2, destinationAccountId: 3 },
             ];
 
-            prisma.transactions.findMany.mockResolvedValue(mockTransactions);
+            prisma.transaction.findMany.mockResolvedValue(mockTransactions);
 
             await TransactionController.getAllTransactions(req, res);
 
@@ -126,7 +126,7 @@ describe("TransactionController", () => {
         });
 
         it("should return 500 if there is an error", async () => {
-            prisma.transactions.findMany.mockRejectedValue(new Error("Database error"));
+            prisma.transaction.findMany.mockRejectedValue(new Error("Database error"));
 
             await TransactionController.getAllTransactions(req, res);
 

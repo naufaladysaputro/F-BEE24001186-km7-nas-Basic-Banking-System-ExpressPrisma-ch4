@@ -49,14 +49,14 @@ const UserController = require("../../controllers/users.controller.js");
 
 // Mock Prisma Client
 jest.mock("../../config/prisma.js", () => ({
-    users: {
+    user: {
         findMany: jest.fn(),
         findUnique: jest.fn(),
         create: jest.fn(),
         update: jest.fn(),
         delete: jest.fn(),
     },
-    profiles: {
+    profile: {
         delete: jest.fn(),
     },
 }));
@@ -72,7 +72,7 @@ describe("UserController - getAllUser", () => {
         ];
 
         // Setup mock response dari prisma
-        prisma.users.findMany.mockResolvedValue(mockUsers);
+        prisma.user.findMany.mockResolvedValue(mockUsers);
 
         // Mock objek req dan res
         const req = {};
@@ -86,12 +86,12 @@ describe("UserController - getAllUser", () => {
 
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith(mockUsers);
-        expect(prisma.users.findMany).toHaveBeenCalledTimes(1);
+        expect(prisma.user.findMany).toHaveBeenCalledTimes(1);
     });
 
     it("should return 500 if there is an error", async () => {
         // Setup mock untuk error
-        prisma.users.findMany.mockRejectedValue(new Error("Database error"));
+        prisma.user.findMany.mockRejectedValue(new Error("Database error"));
 
         // Mock objek req dan res
         const req = {};
@@ -120,7 +120,7 @@ describe("UserController - getUserById", () => {
         };
 
         // Setup mock response dari prisma
-        prisma.users.findUnique.mockResolvedValue(mockUser);
+        prisma.user.findUnique.mockResolvedValue(mockUser);
 
         // Mock objek req dan res
         const req = { params: { id: "1" } };
@@ -135,7 +135,7 @@ describe("UserController - getUserById", () => {
         // Uji hasilnya
         expect(res.status).not.toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith(mockUser);
-        expect(prisma.users.findUnique).toHaveBeenCalledWith({
+        expect(prisma.user.findUnique).toHaveBeenCalledWith({
             where: { id: 1 },
             include: { profile: true },
         });
@@ -143,7 +143,7 @@ describe("UserController - getUserById", () => {
 
     it("should return 400 if user with specified id is not found", async () => {
         // Setup mock untuk tidak menemukan user
-        prisma.users.findUnique.mockResolvedValue(null);
+        prisma.user.findUnique.mockResolvedValue(null);
 
         // Mock objek req dan res
         const req = { params: { id: "99" } };
@@ -157,12 +157,12 @@ describe("UserController - getUserById", () => {
 
         // Uji hasilnya
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({ error: "id not found" });
+        expect(res.json).toHaveBeenCalledWith({ error: "User not found" });
     });
 
     it("should return 400 and error message if there is a server error", async () => {
         // Setup mock untuk error
-        prisma.users.findUnique.mockRejectedValue(new Error("Database error"));
+        prisma.user.findUnique.mockRejectedValue(new Error("Database error"));
 
         // Mock objek req dan res
         const req = { params: { id: "1" } };
@@ -181,172 +181,227 @@ describe("UserController - getUserById", () => {
 });
 
 
-describe("UserController - createUserWithProfile", () => {
-    it("should create a new user with profile and return it", async () => {
-        const req = {
-            body: {
-                email: "test@example.com",
-                name: "Test User",
-                password: "password",
-                identity_type: "ID",
-                identity_number: "123456789",
-                address: "Test Address",
+ describe("createUserWithProfile", () => {
+    it("should create a user and profile with status 200", async () => {
+      const req = {
+        body: {
+          email: "johndoe@example.com",
+          name: "John Doe",
+          password: "password123",
+          identityType: "ID",
+          identityNumber: "123456789",
+          address: "123 Main St",
+        },
+      };
+
+      const mockUser = {
+        id: 1,
+        email: "johndoe@example.com",
+        name: "John Doe",
+        profile: {},
+      };
+
+      prisma.user.create.mockResolvedValue(mockUser);
+
+      const res = {
+        json: jest.fn(),
+      };
+
+      await UserController.createUserWithProfile(req, res);
+
+      expect(res.json).toHaveBeenCalledWith(mockUser);
+      expect(prisma.user.create).toHaveBeenCalledWith({
+        data: {
+          email: req.body.email,
+          name: req.body.name,
+          password: req.body.password,
+          profile: {
+            create: {
+              identityType: req.body.identityType,
+              identityNumber: req.body.identityNumber,
+              address: req.body.address,
             },
-        };
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-        };
+          },
+        },
+        include: { profile: true },
+      });
+    });
 
-        const mockUser = { id: 1, ...req.body, profile: { id: 1, userId: 1, ...req.body } };
-        prisma.users.create.mockResolvedValue(mockUser);
+    it("should return 400 if required fields are missing", async () => {
+      const req = { body: { name: "John Doe", password: "password123" } };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
 
-        await UserController.createUserWithProfile(req, res);
+      await UserController.createUserWithProfile(req, res);
 
-        expect(res.json).toHaveBeenCalledWith(mockUser);
-        expect(prisma.users.create).toHaveBeenCalledWith({
-            data: {
-                email: req.body.email,
-                name: req.body.name,
-                password: req.body.password,
-                profile: {
-                    create: {
-                        identity_type: req.body.identity_type,
-                        identity_number: req.body.identity_number,
-                        address: req.body.address,
-                    },
-                },
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        error: "Email, name, and password are required",
+      });
+    });
+
+    it("should return 500 if there is an error", async () => {
+      const req = {
+        body: {
+          email: "johndoe@example.com",
+          name: "John Doe",
+          password: "password123",
+        },
+      };
+
+      prisma.user.create.mockRejectedValue(new Error("Database error"));
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      await UserController.createUserWithProfile(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
+    });
+  });
+
+
+  describe("updateUsersWithProfile", () => {
+    it("should update a user and profile with status 200", async () => {
+      const req = {
+        params: { id: "1" },
+        body: {
+          email: "updated@example.com",
+          name: "Updated Name",
+        },
+      };
+
+      const mockUser = {
+        id: 1,
+        email: "johndoe@example.com",
+        name: "John Doe",
+        profile: {
+          identityType: "ID",
+          identityNumber: "123456789",
+          address: "123 Main St",
+        },
+      };
+
+      const updatedUser = { ...mockUser, email: req.body.email };
+
+      prisma.user.findUnique.mockResolvedValue(mockUser);
+      prisma.user.update.mockResolvedValue(updatedUser);
+
+      const res = {
+        json: jest.fn(),
+      };
+
+      await UserController.updateUsersWithProfile(req, res);
+
+      expect(res.json).toHaveBeenCalledWith(updatedUser);
+      expect(prisma.user.update).toHaveBeenCalledWith({
+        where: { id: 1 },
+        data: {
+          email: req.body.email,
+          name: req.body.name,
+          password: mockUser.password, // assuming password is unchanged
+          profile: {
+            update: {
+              identityType: mockUser.profile.identityType,
+              identityNumber: mockUser.profile.identityNumber,
+              address: mockUser.profile.address,
             },
-            include: { profile: true },
-        });
+          },
+        },
+        include: { profile: true },
+      });
     });
 
-    it("should return 500 if an error occurs", async () => {
-        const req = { body: {} };
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-        };
+    it("should return 400 if user not found", async () => {
+      prisma.user.findUnique.mockResolvedValue(null);
 
-        prisma.users.create.mockRejectedValue(new Error("Database error"));
+      const req = { params: { id: "1" }, body: {} };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
 
-        await UserController.createUserWithProfile(req, res);
+      await UserController.updateUsersWithProfile(req, res);
 
-        expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({ error: "Email, name, password, are required" });
-    });
-});
-
-describe("UserController - updateUsersWithProfile", () => {
-    it("should update an existing user and profile and return updated user", async () => {
-        const req = {
-            params: { id: "1" },
-            body: { email: "updated@example.com" },
-        };
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-        };
-
-        const mockExistingUser = {
-            id: 1,
-            email: "test@example.com",
-            profile: { id: 1, identity_type: "ID", identity_number: "123456789", address: "Address" },
-        };
-        const mockUpdatedUser = { id: 1, ...req.body, profile: mockExistingUser.profile };
-
-        prisma.users.findUnique.mockResolvedValue(mockExistingUser);
-        prisma.users.update.mockResolvedValue(mockUpdatedUser);
-
-        await UserController.updateUsersWithProfile(req, res);
-
-        expect(res.json).toHaveBeenCalledWith(mockUpdatedUser);
-        expect(prisma.users.update).toHaveBeenCalledWith({
-            where: { id: parseInt(req.params.id) },
-            data: {
-                email: req.body.email,
-                name: mockExistingUser.name,
-                password: mockExistingUser.password,
-                profile: {
-                    update: {
-                        identity_type: mockExistingUser.profile.identity_type,
-                        identity_number: mockExistingUser.profile.identity_number,
-                        address: mockExistingUser.profile.address,
-                    },
-                },
-            },
-            include: { profile: true },
-        });
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ error: "User not found" });
     });
 
-    it("should return 400 if user is not found", async () => {
-        const req = { params: { id: "99" }, body: {} };
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-        };
+    it("should return 500 if there is an error", async () => {
+      const req = { params: { id: "1" }, body: {} };
 
-        prisma.users.findUnique.mockResolvedValue(null);
+      prisma.user.findUnique.mockRejectedValue(new Error("Database error"));
 
-        await UserController.updateUsersWithProfile(req, res);
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
 
-        expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({ error: "User not found" });
+      await UserController.updateUsersWithProfile(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
     });
-});
+  });
 
-describe("UserController - deleteUsersById", () => {
-    it("should delete a user and associated profile", async () => {
-        const req = { params: { id: "1" } };
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-        };
+  describe("deleteUsersById", () => {
+    it("should delete a user with status 200", async () => {
+      const req = { params: { id: "1" } };
 
-        const mockExistingUser = { id: 1, profile: { id: 1, userId: 1 } };
-        prisma.users.findUnique.mockResolvedValue(mockExistingUser);
-        prisma.profiles.delete.mockResolvedValue({});
-        prisma.users.delete.mockResolvedValue({});
+      const mockUser = { id: 1, profile: { userId: 1 } };
 
-        await UserController.deleteUsersById(req, res);
+      prisma.user.findUnique.mockResolvedValue(mockUser);
+      prisma.profile.delete.mockResolvedValue({});
+      prisma.user.delete.mockResolvedValue({});
 
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith({ message: "Data has been deleted" });
-        expect(prisma.profiles.delete).toHaveBeenCalledWith({ where: { userId: mockExistingUser.id } });
-        expect(prisma.users.delete).toHaveBeenCalledWith({ where: { id: parseInt(req.params.id) } });
-    });
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
 
-    it("should return 400 if user is not found", async () => {
-        const req = { params: { id: "99" } };
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-        };
+      await UserController.deleteUsersById(req, res);
 
-        prisma.users.findUnique.mockResolvedValue(null);
-
-        await UserController.deleteUsersById(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({ error: "User not found" });
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ message: "Data has been deleted" });
     });
 
-    it("should return 500 if an error occurs during deletion", async () => {
-        const req = { params: { id: "1" } };
-        const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-        };
+    it("should return 400 if user not found", async () => {
+      prisma.user.findUnique.mockResolvedValue(null);
 
-        prisma.users.findUnique.mockResolvedValue({ id: 1, profile: { id: 1, userId: 1 } });
-        prisma.profiles.delete.mockRejectedValue(new Error("Database error"));
+      const req = { params: { id: "1" } };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
 
-        await UserController.deleteUsersById(req, res);
+      await UserController.deleteUsersById(req, res);
 
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ error: "User not found" });
     });
-});
+
+    it("should return 500 if there is an error", async () => {
+      const req = { params: { id: "1" } };
+
+      prisma.user.findUnique.mockResolvedValue({ id: 1 });
+      prisma.profile.delete.mockRejectedValue(new Error("Database error"));
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      await UserController.deleteUsersById(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
+    });
+  });
 
 
 
