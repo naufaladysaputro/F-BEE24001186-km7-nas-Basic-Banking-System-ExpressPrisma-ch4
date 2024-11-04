@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1730215859796" clover="3.2.0">
-  <project timestamp="1730215859796" name="All files">
+<coverage generated="1730218598444" clover="3.2.0">
+  <project timestamp="1730218598444" name="All files">
     <metrics statements="601" coveredstatements="590" conditionals="92" coveredconditionals="83" methods="18" coveredmethods="18" elements="711" coveredelements="691" complexity="0" loc="601" ncloc="601" packages="1" files="4" classes="4"/>
     <file name="accounts.controller.js" path="D:\Binar-BE\challenge 4 github\F-BEE24001186-km7-nas-Basic-Banking-System-ExpressPrisma-ch4\controllers\accounts.controller.js">
       <metrics statements="177" coveredstatements="170" conditionals="36" coveredconditionals="31" methods="7" coveredmethods="7"/>
