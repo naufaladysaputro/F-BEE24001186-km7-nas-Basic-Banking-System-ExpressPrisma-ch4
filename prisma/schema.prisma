@@ -14,12 +14,13 @@ datasource db {
 }
 
 model User {
-  id          Int            @id @default(autoincrement())
-  email       String         @unique @db.VarChar(255)
-  name        String         @db.VarChar(255)
-  password    String         @db.VarChar(255)
+  id          Int           @id @default(autoincrement())
+  email       String        @unique @db.VarChar(255)
+  name        String        @db.VarChar(255)
+  password    String        @db.VarChar(255)
   profile     Profile?
   bankAccount BankAccount[]
+  images      Image[]
 
   @@map("Users")
 }
@@ -36,25 +37,38 @@ model Profile {
 }
 
 model BankAccount {
-  id                     Int            @id @default(autoincrement())
-  bankName               String         @map("bank_name")
-  accountNumber          Int            @map("account_number")
+  id                     Int           @id @default(autoincrement())
+  bankName               String        @map("bank_name")
+  accountNumber          Int           @map("account_number")
   balance                Float
-  createdAt              DateTime       @default(now()) @map("created_at")
-  updatedAt              DateTime       @updatedAt @map("updated_at")
-  user                   User           @relation(fields: [userId], references: [id])
+  createdAt              DateTime      @default(now()) @map("created_at")
+  updatedAt              DateTime      @updatedAt @map("updated_at")
+  user                   User          @relation(fields: [userId], references: [id])
   userId                 Int
   transactionSource      Transaction[] @relation("TransactionSource")
   transactionDestination Transaction[] @relation("TransactionDestination")
+
   @@map("BankAccounts")
 }
 
 model Transaction {
-  id                   Int          @id @default(autoincrement())
+  id                   Int         @id @default(autoincrement())
   amount               Float
   sourceAccount        BankAccount @relation("TransactionSource", fields: [sourceAccountId], references: [id])
   destinationAccount   BankAccount @relation("TransactionDestination", fields: [destinationAccountId], references: [id])
-  sourceAccountId      Int          @map("source_account_id")
-  destinationAccountId Int          @map("destination_account_id")
+  sourceAccountId      Int         @map("source_account_id")
+  destinationAccountId Int         @map("destination_account_id")
+
   @@map("Transactions")
+}
+
+model Image {
+  id          Int    @id @default(autoincrement())
+  title       String @db.VarChar(255)
+  description String @db.VarChar(500)
+  url         String @db.VarChar(255)
+  user        User   @relation(fields: [userId], references: [id])
+  userId      Int    @map("user_id")
+
+  @@map("Images")
 }

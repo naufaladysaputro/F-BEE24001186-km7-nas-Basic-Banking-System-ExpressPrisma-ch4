@@ -13,6 +13,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+//imagekit
+// const imageRouter = require('./routes/image');
+// app.use('/api/v1', imageRouter);
+
 //swagger
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./docs/openapi.json");
@@ -25,6 +29,13 @@ app.use((err, req, res, next) => {
       message: err.message
   })
 })
+
+// app.use((err, req, res, next) => {
+//   const statusCode = err.status || 500;
+//   res.status(statusCode).json({
+//       message: err.message || "Internal Server Error"
+//   });
+// });
 
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
