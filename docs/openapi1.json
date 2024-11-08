@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "challlenge 6 BE",
+    "title": "challlenge 5 BE",
     "description": "Development For Challenge 5 Binar Back End Dashboard for a library designed to manage library data and a library website utilizing, Express.js as the backend, Postgress as the Database Management System (DBMS), and Prisma (ORM).",
     "version": "1.0.0"
   },
@@ -30,9 +30,6 @@
     },
     {
       "name": "transactions"
-    },
-    {
-      "name": "image"
     }
   ],
   "paths": {
@@ -669,7 +666,7 @@
               "schema": {
                 "type": "object",
                 "example": {
-                  "email": "naufal@mail.com",
+                  "email": "naufalady@mail.com",
                   "password": "naufal123",
                   "name": "naufal",
                   "identityType": "KTP",
@@ -753,8 +750,8 @@
               "schema": {
                 "type": "object",
                 "example": {
-                  "email": "naufalady@mail.com",
-                  "password": "naufal123"
+                  "email": "naufaladys@mail.com",
+                  "password": "naufals123"
                 }
               }
             }
@@ -1787,280 +1784,6 @@
                   "amount": 500,
                   "sourceAccountId": 1,
                   "destinationAccountId": 2
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/images/": {
-      "post": {
-        "tags": [
-          "image"
-        ],
-        "summary": "upload",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "userId": {
-                    "type": "integer",
-                    "example": "3"
-                  },
-                  "title": {
-                    "type": "string",
-                    "example": "foto"
-                  },
-                  "description": {
-                    "type": "string",
-                    "example": "foto pengguna"
-                  },
-                  "image": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "X-Powered-By": {
-                "schema": {
-                  "type": "string",
-                  "example": "Express"
-                }
-              },
-              "Content-Type": {
-                "schema": {
-                  "type": "string",
-                  "example": "application/json; charset=utf-8"
-                }
-              },
-              "Content-Length": {
-                "schema": {
-                  "type": "integer",
-                  "example": "182"
-                }
-              },
-              "ETag": {
-                "schema": {
-                  "type": "string",
-                  "example": "W/\"b6-1NTwW0X9YWgIdCcCQkBMYc4BAMg\""
-                }
-              },
-              "Date": {
-                "schema": {
-                  "type": "string",
-                  "example": "Fri, 08 Nov 2024 10:47:40 GMT"
-                }
-              },
-              "Connection": {
-                "schema": {
-                  "type": "string",
-                  "example": "keep-alive"
-                }
-              },
-              "Keep-Alive": {
-                "schema": {
-                  "type": "string",
-                  "example": "timeout=5"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                },
-                "example": {
-                  "status": true,
-                  "data": {
-                    "id": 3,
-                    "name": "Michie-JKT48_x3eMaGsip.jpg",
-                    "url": "https://ik.imagekit.io/fsw1minich5/Michie-JKT48_x3eMaGsip.jpg",
-                    "title": "foto",
-                    "description": "foto pengguna"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/images/1": {
-      "get": {
-        "tags": [
-          "image"
-        ],
-        "summary": "by id",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "X-Powered-By": {
-                "schema": {
-                  "type": "string",
-                  "example": "Express"
-                }
-              },
-              "Content-Type": {
-                "schema": {
-                  "type": "string",
-                  "example": "application/json; charset=utf-8"
-                }
-              },
-              "Content-Length": {
-                "schema": {
-                  "type": "integer",
-                  "example": "290"
-                }
-              },
-              "ETag": {
-                "schema": {
-                  "type": "string",
-                  "example": "W/\"122-VJuudbxv05AQ4GD11Q3DRg9hXOU\""
-                }
-              },
-              "Date": {
-                "schema": {
-                  "type": "string",
-                  "example": "Fri, 08 Nov 2024 10:49:48 GMT"
-                }
-              },
-              "Connection": {
-                "schema": {
-                  "type": "string",
-                  "example": "keep-alive"
-                }
-              },
-              "Keep-Alive": {
-                "schema": {
-                  "type": "string",
-                  "example": "timeout=5"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                },
-                "example": {
-                  "status": true,
-                  "data": {
-                    "id": 1,
-                    "title": "foto",
-                    "description": "foto pengguna",
-                    "url": "https://ik.imagekit.io/fsw1minich5/emading1.5_tG1lv2HwF.jpg",
-                    "userId": 1,
-                    "user": {
-                      "id": 1,
-                      "email": "naufalady@mail.com",
-                      "name": "naufal",
-                      "password": "$2b$10$/PWK.ocggFPf3WvwpV93H.1/JKFLbR7jn/wLjTFfSCZfLY0ZnddvW"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/images/2": {
-      "put": {
-        "tags": [
-          "image"
-        ],
-        "summary": "update",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "example": "foto"
-                  },
-                  "descripton": {
-                    "type": "string",
-                    "example": "foto ini loh"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "X-Powered-By": {
-                "schema": {
-                  "type": "string",
-                  "example": "Express"
-                }
-              },
-              "Content-Type": {
-                "schema": {
-                  "type": "string",
-                  "example": "application/json; charset=utf-8"
-                }
-              },
-              "Content-Length": {
-                "schema": {
-                  "type": "integer",
-                  "example": "150"
-                }
-              },
-              "ETag": {
-                "schema": {
-                  "type": "string",
-                  "example": "W/\"96-CKNuqWsxz5SS/6VFhuU4ccJBg9A\""
-                }
-              },
-              "Date": {
-                "schema": {
-                  "type": "string",
-                  "example": "Fri, 08 Nov 2024 10:51:23 GMT"
-                }
-              },
-              "Connection": {
-                "schema": {
-                  "type": "string",
-                  "example": "keep-alive"
-                }
-              },
-              "Keep-Alive": {
-                "schema": {
-                  "type": "string",
-                  "example": "timeout=5"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                },
-                "example": {
-                  "status": true,
-                  "data": {
-                    "id": 2,
-                    "title": "foto",
-                    "description": "foto ini",
-                    "url": "https://ik.imagekit.io/fsw1minich5/emading1.5_ozJmzSAOt.jpg",
-                    "userId": 2
-                  }
                 }
               }
             }
