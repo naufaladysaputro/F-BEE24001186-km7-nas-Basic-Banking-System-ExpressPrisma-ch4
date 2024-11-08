@@ -4,7 +4,7 @@ const upload = require("../../../libs/upload");
 const router = express.Router();
 
 // Rute untuk mengunggah gambar
-router.post("/upload", upload.single("image"), ImageController.imagekitUpload);
+router.post("/", upload.single("image"), ImageController.imagekitUpload);
 
 // Rute untuk mendapatkan semua gambar
 router.get("/", ImageController.getAllImages);
