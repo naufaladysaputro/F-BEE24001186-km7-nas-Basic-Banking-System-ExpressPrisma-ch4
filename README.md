@@ -45,7 +45,7 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Implementasi Authentifikasi dan  TTD (Testing)</h3>
+  <h3 align="center">Implementasi Authentifikasi dan  TTD (Testing) (CH5)</h3>
 
 </div>
 
@@ -62,3 +62,30 @@
    ```sh
    http://localhost:3000/api-docs/#/
    ```
+
+   <!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+  <h3 align="center">Media Handling-cloud&server management-deployment gcp(aws) (CH6)</h3>
+
+</div>
+
+###### 8 November 2024
+
+
+* swagger
+
+   ```sh
+   http://localhost:3000/api-docs/#/
+   ```
+
+* link deploymet manual (aws)
+
+   ```sh
+   http://18.139.1.255:3000/
+   ```
+
