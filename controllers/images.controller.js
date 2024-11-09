@@ -169,6 +169,6 @@ class ImageController {
     }
   }
 }
-console.log("");
+
 
 module.exports = new ImageController();
