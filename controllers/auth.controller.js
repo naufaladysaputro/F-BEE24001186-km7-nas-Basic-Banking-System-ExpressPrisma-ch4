@@ -1,6 +1,7 @@
 const prisma = require("../config/prisma");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Sentry = require("@sentry/node");
 
 class AuthController {
     async register(req, res) {
@@ -47,6 +48,7 @@ class AuthController {
 
             res.json({ message: "Registration successful" });
         } catch (error) {
+            Sentry.captureException(error); // Laporkan error ke Sentry
             res.status(500).json({ error: error.message });
         }
     }
@@ -89,6 +91,7 @@ class AuthController {
             console.log("Generated Token:", token);
             res.json({ token });
         } catch (error) {
+            Sentry.captureException(error); // Laporkan error ke Sentry
             res.status(500).json({ error: error.message });
         }
     }
@@ -121,6 +124,7 @@ class AuthController {
             // Kembalikan data pengguna
             res.json(user);
         } catch (error) {
+            Sentry.captureException(error); // Laporkan error ke Sentry
             res.status(500).json({ error: error.message });
         }
     }

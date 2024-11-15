@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const Sentry = require("@sentry/node");
 
 class UserController {
 
@@ -10,6 +11,7 @@ class UserController {
       });
       res.status(200).json(users); 
     } catch (error) {
+      Sentry.captureException(error);
       res.status(500).json({ error: error.message });
     }
   }
@@ -28,7 +30,8 @@ class UserController {
 
       res.json(user);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      Sentry.captureException(error);
+      res.status(500).json({ error: error.message });
     }
   }
 
@@ -62,6 +65,7 @@ class UserController {
       });
       res.json(user);
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }
@@ -104,6 +108,7 @@ class UserController {
 
       res.json(updatedUser);
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }
@@ -131,6 +136,7 @@ class UserController {
 
       res.status(200).json({ message: "Data has been deleted" });
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }

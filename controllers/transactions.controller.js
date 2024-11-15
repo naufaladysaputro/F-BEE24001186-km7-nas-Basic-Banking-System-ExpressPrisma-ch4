@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const Sentry = require("@sentry/node");
 
 class TransactionController {
   async createTransaction(req, res) {
@@ -20,6 +21,7 @@ class TransactionController {
       });
       res.json(transaction);
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }
@@ -38,6 +40,7 @@ class TransactionController {
       }
       res.json(detail);
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }
@@ -47,6 +50,7 @@ class TransactionController {
       const list = await prisma.transaction.findMany();
       res.json(list);
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }

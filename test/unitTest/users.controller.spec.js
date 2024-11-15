@@ -175,7 +175,7 @@ describe("UserController - getUserById", () => {
         await UserController.getUserById(req, res);
 
         // Uji hasilnya
-        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({ error: "Database error" });
     });
 });
