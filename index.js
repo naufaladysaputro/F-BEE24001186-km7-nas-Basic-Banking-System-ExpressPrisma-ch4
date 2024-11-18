@@ -10,11 +10,24 @@ const routes = require("./routes");
 const bodyParser = require('body-parser');
 const app = express();
 
+
+//socket.io
+const socketIo = require("socket.io");
+const server = http.createServer(app);
+const io = socketIo(server); 
+
+// //socketmiddleware
+const { initIo } = require("./middleware/socket");
+initIo(server);
+
+
 //sentry
 const Sentry = require("@sentry/node");
 // app.use(Sentry.Handlers.requestHandler());
 Sentry.setupExpressErrorHandler(app);
 
+// app.use(Sentry.Handlers.errorHandler());
+//endpoint-testing-sentry
 app.get("/debug-sentry", function mainHandler(req, res) {
   try {
     // Simulasi error
@@ -28,22 +41,11 @@ app.get("/debug-sentry", function mainHandler(req, res) {
     });
   }
 });
-
-
-// app.get("/debug-sentry", function mainHandler(err, req, res) {
-//   throw new Error("My first Sentry error!");
-// });
-
-// app.use(Sentry.Handlers.requestHandler());
-// app.use(Sentry.Handlers.errorHandler());
+//end-sentry
 
 //email
-
-// const nodeMailer = require('nodemailer');
-// const emailRoutes = require('./routes/emailRoutes');
-// app.use('/api/v1/email', emailRoutes);
-
 const nodemailer = require('nodemailer');
+
 // create reusable transporter object using the default SMTP transport
 
 app.use(bodyParser.json());
@@ -60,6 +62,7 @@ const transporter = nodemailer.createTransport({
   secure: true,
 });
 
+//endpoint-email-testing
 app.post("/text-mail", (req, res) => {
   const { to, subject, text } = req.body || {};
 
@@ -80,18 +83,28 @@ app.post("/text-mail", (req, res) => {
       console.error(error);
       return res.status(500).json({ message: "Error sending email", error });
     }
+
+  // Emit notifikasi via Socket.IO
+  io.emit("emailSent", { to, subject });
+
     res.status(200).json({ message: "Mail sent", message_id: info.messageId });
   });
 });
 
-
-
+// Socket.IO Listener
+io.on("connection", (socket) => {
+  console.log("New client connected");
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+//end-email
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public"))); //untuk memanggil folder html/css tapi harus msk ke file public
 
 //imagekit
 // const imageRouter = require('./routes/image');
@@ -101,10 +114,10 @@ app.use(express.static(path.join(__dirname, "public")));
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./docs/openapi.json");
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//end-swagger
 
+//routes
 app.use(routes);
-
-// app.use(Sentry.Handlers.errorHandler());
 
 // app.use((err, req, res, next) => {
 //   res.status(err.status).json({
@@ -123,7 +136,7 @@ app.use((err, req, res, next) => {
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-const server = http.createServer(app);
+// const server = http.createServer(app);
 
 server.listen(port);
 server.on("error", onError);

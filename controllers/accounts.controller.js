@@ -1,5 +1,6 @@
 const prisma = require("../config/prisma"); // Pastikan path ini benar
 const { Prisma } = require('@prisma/client'); // Tambahkan baris ini
+const Sentry = require("@sentry/node");
 
 class AccountController {
   
