@@ -1,5 +1,6 @@
 const prisma = require("../config/prisma"); // Pastikan path ini benar
 const { Prisma } = require('@prisma/client'); // Tambahkan baris ini
+const Sentry = require("@sentry/node");
 
 class AccountController {
   
@@ -8,6 +9,7 @@ class AccountController {
       const accounts = await prisma.bankAccount.findMany();
       res.json(accounts);
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }
@@ -23,6 +25,7 @@ class AccountController {
       }
       res.json(account);
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }
@@ -48,6 +51,7 @@ class AccountController {
       });
       res.json(account);
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }
@@ -83,6 +87,7 @@ class AccountController {
           meta: error.meta,
         });
       } else {
+        Sentry.captureException(error); // Laporkan error ke Sentry
         res.status(500).json({ error: error.message });
       }
     }
@@ -99,6 +104,7 @@ class AccountController {
         message: "Account successfully deleted",
       });
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }
@@ -132,6 +138,7 @@ class AccountController {
         account: updatedAccount,
       });
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }
@@ -169,6 +176,7 @@ class AccountController {
         account: updatedAccount,
       });
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({ error: error.message });
     }
   }

@@ -2352,19 +2352,19 @@
               "Content-Length": {
                 "schema": {
                   "type": "integer",
-                  "example": "116"
+                  "example": "304"
                 }
               },
               "ETag": {
                 "schema": {
                   "type": "string",
-                  "example": "W/\"74-LY5/hLSW+V5vMfnT5D8OWNva7vk\""
+                  "example": "W/\"130-2e6R/FRMKfhMOoE0fFlzgq65z+4\""
                 }
               },
               "Date": {
                 "schema": {
                   "type": "string",
-                  "example": "Sun, 17 Nov 2024 08:53:07 GMT"
+                  "example": "Mon, 18 Nov 2024 14:51:26 GMT"
                 }
               },
               "Connection": {
@@ -2387,7 +2387,8 @@
                 },
                 "example": {
                   "message": "Reset password email sent successfully",
-                  "message_id": "<4f712cc2-b176-677a-087f-2b6c4c912d56@gmail.com>"
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImR6YTE3cHJhc3RpeWF3YW5AZ21haWwuY29tIiwiaWF0IjoxNzMxOTQxNDg0LCJleHAiOjE3MzE5NDUwODR9.ITw0-H-l8hxFLlvGAu7F1a_mrau-NyJ0m9FXIqmpePI",
+                  "message_id": "<ea988449-1a6c-a48c-6d03-33a9fb66f0d9@gmail.com>"
                 }
               }
             }

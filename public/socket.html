@@ -1,0 +1,85 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Notification</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <h1>Email Notification</h1>
+  <div id="notification"></div>
+
+  <script>
+    const socket = io();
+
+    // Listen for emailSent event
+    socket.on("emailSent", (data) => {
+      const notificationDiv = document.getElementById("notification");
+      const message = `Email successfully sent to ${data.to} with subject "${data.subject}".`;
+      notificationDiv.innerHTML = `<p>${message}</p>`;
+    });
+  </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Notifications</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #notification p {
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    .success {
+      border-color: #4CAF50;
+      color: #4CAF50;
+    }
+    .error {
+      border-color: #F44336;
+      color: #F44336;
+    }
+  </style>
+</head>
+<body>
+  <h1>Notifications</h1>
+  <div id="notification"></div>
+
+  <script>
+    const socket = io();
+
+    // Listen for emailSent event
+    socket.on("emailSent", (data) => {
+      const notificationDiv = document.getElementById("notification");
+      const message = `📧 Email successfully sent to <b>${data.to}</b> with subject "<i>${data.subject}</i>".`;
+      notificationDiv.innerHTML += `<p class="success">${message}</p>`;
+    });
+
+    // Listen for userRegistered event
+    socket.on("userRegistered", (data) => {
+      const notificationDiv = document.getElementById("notification");
+      const message = `🎉 User <b>${data.name}</b> registered successfully with email <b>${data.email}</b>.`;
+      notificationDiv.innerHTML += `<p class="success">${message}</p>`;
+    });
+
+    // Listen for passwordReset event
+    socket.on("passwordReset", (data) => {
+      const notificationDiv = document.getElementById("notification");
+      const message = `🔑 Password reset successfully for user <b>${data.email}</b>.`;
+      notificationDiv.innerHTML += `<p class="success">${message}</p>`;
+    });
+  </script>
+</body>
+</html>
+

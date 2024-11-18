@@ -1,5 +1,6 @@
 const imagekit = require("../libs/imagekit");
 const prisma = require("../config/prisma");
+const Sentry = require("@sentry/node");
 
 class ImageController {
   
@@ -14,6 +15,7 @@ class ImageController {
         data: images,
       });
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({
         status: false,
         message: error.message,
@@ -42,6 +44,7 @@ class ImageController {
         data: image,
       });
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({
         status: false,
         message: error.message,
@@ -93,6 +96,7 @@ class ImageController {
         },
       });
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({
         status: false,
         message: error.message,
@@ -130,6 +134,7 @@ class ImageController {
         data: updatedImage,
       });
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({
         status: false,
         message: error.message,
@@ -162,6 +167,7 @@ class ImageController {
         message: "Image has been deleted",
       });
     } catch (error) {
+      Sentry.captureException(error); // Laporkan error ke Sentry
       res.status(500).json({
         status: false,
         message: error.message,
