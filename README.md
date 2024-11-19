@@ -116,7 +116,7 @@
    http://18.136.100.251:3000/
    ```
 
-* link swagger Deploy
+* link swagger Deploy (endpoint baru di paling bawah berjudul Node-Mailer & Socket Io)
 
    ```sh
    http://18.136.100.251:3000/api-docs/
