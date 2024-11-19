@@ -89,3 +89,68 @@
    http://18.139.1.255:3000/
    ```
 
+
+   <!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+  <h3 align="center">Debugging&Logging-RealTimeCommunication(socket io)-Mailer(node mailer) (CH7)</h3>
+
+</div>
+
+###### 19 November 2024
+
+
+* swagger
+
+   ```sh
+   http://localhost:3000/api-docs/#/
+   ```
+
+* link deploymet manual (aws)
+
+   ```sh
+   http://18.136.100.251:3000/
+   ```
+
+* link swagger Deploy
+
+   ```sh
+   http://18.136.100.251:3000/api-docs/
+   ```
+
+
+* link deploymet halaman notification
+
+   ```sh
+   http://18.136.100.251:3000/socket.html
+   ```
+
+
+## Dashboard Sentry
+
+
+![App Screenshot](images/dashboard-sentry.png)
+
+
+## Socket-Io Notification
+
+
+![App Screenshot](images/notification.png)
+
+
+## Node-Mailer Gmail Content 
+
+
+![App Screenshot](images/gmail-content.png)
+
+
+## Token In Reset Password Url Button
+
+![App Screenshot](images/token.png)
+
+
+
